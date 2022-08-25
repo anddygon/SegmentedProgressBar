@@ -43,8 +43,8 @@ class SegmentedProgressBar: UIView {
     private var segments = [Segment]()
     private let duration: TimeInterval
     private var hasDoneLayout = false // hacky way to prevent layouting again
-    private var currentAnimationIndex = 0
-    private var isAnimating = false
+    private(set) var currentAnimationIndex = 0
+    private(set) var isAnimating = false
     
     
     init(numberOfSegments: Int, duration: TimeInterval = 5.0) {
@@ -124,6 +124,7 @@ class SegmentedProgressBar: UIView {
         } else {
             self.delegate?.segmentedProgressBarFinished()
             if isLoop {
+                self.delegate?.segmentedProgressBarChangedIndex(index: 0, animated: true)
                 segments.forEach { segment in
                     segment.topSegmentView.layer.removeAllAnimations()
                     segment.topSegmentView.frame.size.width = 0
