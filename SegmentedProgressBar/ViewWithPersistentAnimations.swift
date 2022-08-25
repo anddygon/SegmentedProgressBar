@@ -10,10 +10,11 @@ import UIKit
 class ViewWithPersistentAnimations : UIView {
     private var persistentAnimations: [String: CAAnimation] = [:]
     private var persistentSpeed: Float = 0.0
+    private var whenRestoredAnimationFinished: (() -> Void)?
 
 
-    @objc func willEnterForeground() {
-        self.restoreAnimations(withKeys: Array(self.persistentAnimations.keys))
+    @objc func willEnterForeground(completion: (() -> Void)?) {
+        self.restoreAnimations(withKeys: Array(self.persistentAnimations.keys), completion: completion)
         self.persistentAnimations.removeAll()
         if self.persistentSpeed == 1.0 { //if layer was plaiyng before backgorund, resume it
             self.layer.resume()
@@ -31,17 +32,34 @@ class ViewWithPersistentAnimations : UIView {
 
     func persistAnimations(withKeys: [String]?) {
         withKeys?.forEach({ (key) in
-            if let animation = self.layer.animation(forKey: key) {
+            // 这里必须进行mutable copy 否则会崩溃
+            if let animation = self.layer.animation(forKey: key)?.mutableCopy() as? CAAnimation {
                 self.persistentAnimations[key] = animation
+                animation.delegate = self
             }
         })
     }
 
-    func restoreAnimations(withKeys: [String]?) {
+    func restoreAnimations(withKeys: [String]?, completion: (() -> Void)?) {
+        whenRestoredAnimationFinished = completion
+        
         withKeys?.forEach { key in
             if let persistentAnimation = self.persistentAnimations[key] {
                 self.layer.add(persistentAnimation, forKey: key)
             }
         }
+    }
+}
+
+extension ViewWithPersistentAnimations: CAAnimationDelegate {
+    func animationDidStop(_ anim: CAAnimation, finished flag: Bool) {
+        guard flag else { return }
+        whenRestoredAnimationFinished?()
+        // 因为多个动画的代理结束都会走到这里 防止重复调用
+        whenRestoredAnimationFinished = nil
+    }
+    
+    func animationDidStart(_ anim: CAAnimation) {
+        
     }
 }

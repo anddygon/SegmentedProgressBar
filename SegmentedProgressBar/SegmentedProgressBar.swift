@@ -66,6 +66,7 @@ class SegmentedProgressBar: UIView {
             segments.append(segment)
         }
         self.updateColors()
+        self.aotoHandleBackground()
     }
     
     required init?(coder aDecoder: NSCoder) {
@@ -109,7 +110,6 @@ class SegmentedProgressBar: UIView {
         }, completion: { [weak self] (finished) in
             guard let self = self else { return }
             if !finished {
-                self.isAnimating = false
                 return
             }
             self.next()
@@ -166,13 +166,39 @@ class SegmentedProgressBar: UIView {
             segment.topSegmentView.frame.size.width = 0
         }
     }
+    
+    deinit {
+        NotificationCenter.default.removeObserver(self)
+    }
 }
 
-fileprivate class Segment {
+extension SegmentedProgressBar {
+    func aotoHandleBackground() {
+        NotificationCenter.default.addObserver(self, selector: #selector(willEnterForeground),
+                                               name: UIApplication.willEnterForegroundNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(didEnterBackground),
+                                               name: UIApplication.didEnterBackgroundNotification, object: nil)
+    }
+
+    @objc func willEnterForeground() {
+        let segment = segments[currentAnimationIndex]
+        segment.topSegmentView.willEnterForeground { [weak self] in
+            self?.next()
+        }
+    }
+    
+    @objc func didEnterBackground() {
+        let segment = segments[currentAnimationIndex]
+        segment.topSegmentView.didEnterBackground()
+    }
+}
+
+private class Segment {
     let bottomSegmentView = UIView()
-    let topSegmentView = UIView()
+    let topSegmentView = ViewWithPersistentAnimations()
     
     
     init() {
+        
     }
 }
