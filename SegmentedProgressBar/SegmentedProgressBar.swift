@@ -147,6 +147,17 @@ class SegmentedProgressBar: UIView {
             self.delegate?.segmentedProgressBarChangedIndex(index: index, animated: false)
         }
     }
+    
+    func reset() {
+        currentAnimationIndex = 0
+        isAnimating = false
+        isPaused = false
+        
+        segments.forEach { segment in
+            segment.topSegmentView.layer.removeAllAnimations()
+            segment.topSegmentView.frame.size.width = 0
+        }
+    }
 }
 
 fileprivate class Segment {
