@@ -12,6 +12,7 @@
 		5953F44928B76257001A8F13 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 5953F44728B76257001A8F13 /* Main.storyboard */; };
 		5953F44B28B76257001A8F13 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 5953F44A28B76257001A8F13 /* Assets.xcassets */; };
 		5953F44E28B76257001A8F13 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 5953F44C28B76257001A8F13 /* LaunchScreen.storyboard */; };
+		5953F45628B7683C001A8F13 /* SegmentedProgressBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5953F45528B7683C001A8F13 /* SegmentedProgressBar.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -22,6 +23,7 @@
 		5953F44A28B76257001A8F13 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		5953F44D28B76257001A8F13 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		5953F44F28B76257001A8F13 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		5953F45528B7683C001A8F13 /* SegmentedProgressBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SegmentedProgressBar.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -56,6 +58,7 @@
 			children = (
 				5953F44128B76257001A8F13 /* AppDelegate.swift */,
 				5953F44528B76257001A8F13 /* ViewController.swift */,
+				5953F45528B7683C001A8F13 /* SegmentedProgressBar.swift */,
 				5953F44728B76257001A8F13 /* Main.storyboard */,
 				5953F44A28B76257001A8F13 /* Assets.xcassets */,
 				5953F44C28B76257001A8F13 /* LaunchScreen.storyboard */,
@@ -137,6 +140,7 @@
 			files = (
 				5953F44628B76257001A8F13 /* ViewController.swift in Sources */,
 				5953F44228B76257001A8F13 /* AppDelegate.swift in Sources */,
+				5953F45628B7683C001A8F13 /* SegmentedProgressBar.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
