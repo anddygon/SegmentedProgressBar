@@ -24,6 +24,7 @@ class SegmentedProgressBar: UIView {
             self.updateColors()
         }
     }
+    var isLoop: Bool = true
     var padding: CGFloat = 8.0
     var isPaused: Bool = false {
         didSet {
@@ -129,6 +130,13 @@ class SegmentedProgressBar: UIView {
             self.delegate?.segmentedProgressBarChangedIndex(index: newIndex, animated: true)
         } else {
             self.delegate?.segmentedProgressBarFinished()
+            if isLoop {
+                segments.forEach { segment in
+                    segment.topSegmentView.layer.removeAllAnimations()
+                    segment.topSegmentView.frame.size.width = 0
+                }
+                animate()
+            }
         }
     }
     
