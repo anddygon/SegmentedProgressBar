@@ -24,6 +24,7 @@ class SegmentedProgressBar: UIView {
             self.updateColors()
         }
     }
+    var extraVerticalTouchInset: CGFloat = -8
     var isLoop: Bool = true
     var padding: CGFloat = 8.0
     var isPaused: Bool = false {
@@ -57,6 +58,7 @@ class SegmentedProgressBar: UIView {
             segments.append(segment)
         }
         self.updateColors()
+        self.setupGesture()
         self.aotoHandleBackground()
     }
     
@@ -194,6 +196,24 @@ extension SegmentedProgressBar {
     
     @objc func didBecomeActive() {
         currentSegment.topSegmentView.didBecomeActive()
+    }
+}
+
+extension SegmentedProgressBar {
+    private func setupGesture() {
+        let tap = UITapGestureRecognizer.init(target: self, action: #selector(onTapped(gesture:)))
+        addGestureRecognizer(tap)
+    }
+    
+    @objc private func onTapped(gesture: UITapGestureRecognizer) {
+        let point = gesture.location(in: self)
+        if let index = segments.firstIndex(where: { ($0.bottomSegmentView.frame.minX...$0.bottomSegmentView.frame.maxX).contains(point.x) }) {
+            goto(index: index)
+        }
+    }
+    
+    public override func point(inside point: CGPoint, with event: UIEvent?) -> Bool {
+        return bounds.insetBy(dx: 0, dy: extraVerticalTouchInset).contains(point)
     }
 }
 
