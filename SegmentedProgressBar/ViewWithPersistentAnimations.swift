@@ -16,7 +16,7 @@ class ViewWithPersistentAnimations : UIView {
     @objc func willEnterForeground(completion: (() -> Void)?) {
         self.restoreAnimations(withKeys: Array(self.persistentAnimations.keys), completion: completion)
         self.persistentAnimations.removeAll()
-        if self.persistentSpeed == 1.0 { //if layer was plaiyng before backgorund, resume it
+        if self.persistentSpeed == 1.0 { // if layer was plaiyng before backgorund, resume it
             self.layer.resume()
         }
     }
@@ -24,7 +24,7 @@ class ViewWithPersistentAnimations : UIView {
     @objc func didEnterBackground() {
         self.persistentSpeed = self.layer.speed
 
-        self.layer.speed = 1.0 //in case layer was paused from outside, set speed to 1.0 to get all animations
+        self.layer.speed = 1.0 // in case layer was paused from outside, set speed to 1.0 to get all animations
         self.persistAnimations(withKeys: self.layer.animationKeys())
         self.layer.speed = self.persistentSpeed //restore original speed
         self.layer.pause()
@@ -49,17 +49,24 @@ class ViewWithPersistentAnimations : UIView {
             }
         }
     }
+    
+    func willResignActive() {
+        layer.pause()
+    }
+    
+    func didBecomeActive() {
+        if layer.isPaused() {
+            layer.resume()
+        }
+    }
 }
 
 extension ViewWithPersistentAnimations: CAAnimationDelegate {
     func animationDidStop(_ anim: CAAnimation, finished flag: Bool) {
-        guard flag else { return }
-        whenRestoredAnimationFinished?()
-        // 因为多个动画的代理结束都会走到这里 防止重复调用
-        whenRestoredAnimationFinished = nil
-    }
-    
-    func animationDidStart(_ anim: CAAnimation) {
-        
+        if flag {
+            whenRestoredAnimationFinished?()
+            // 因为多个动画的代理结束都会走到这里 防止重复调用
+            whenRestoredAnimationFinished = nil
+        }
     }
 }

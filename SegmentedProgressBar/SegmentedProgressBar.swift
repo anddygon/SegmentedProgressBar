@@ -31,19 +31,10 @@ class SegmentedProgressBar: UIView {
             if isPaused {
                 for segment in segments {
                     let layer = segment.topSegmentView.layer
-                    let pausedTime = layer.convertTime(CACurrentMediaTime(), from: nil)
-                    layer.speed = 0.0
-                    layer.timeOffset = pausedTime
+                    layer.pause()
                 }
             } else {
-                let segment = segments[currentAnimationIndex]
-                let layer = segment.topSegmentView.layer
-                let pausedTime = layer.timeOffset
-                layer.speed = 1.0
-                layer.timeOffset = 0.0
-                layer.beginTime = 0.0
-                let timeSincePause = layer.convertTime(CACurrentMediaTime(), from: nil) - pausedTime
-                layer.beginTime = timeSincePause
+                currentSegment.topSegmentView.layer.resume()
             }
         }
     }
@@ -159,7 +150,6 @@ class SegmentedProgressBar: UIView {
     func reset() {
         currentAnimationIndex = 0
         isAnimating = false
-        isPaused = false
         
         segments.forEach { segment in
             segment.topSegmentView.layer.removeAllAnimations()
@@ -173,23 +163,37 @@ class SegmentedProgressBar: UIView {
 }
 
 extension SegmentedProgressBar {
+    private var currentSegment: Segment {
+        return segments[currentAnimationIndex]
+    }
+    
     func aotoHandleBackground() {
         NotificationCenter.default.addObserver(self, selector: #selector(willEnterForeground),
                                                name: UIApplication.willEnterForegroundNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(didEnterBackground),
                                                name: UIApplication.didEnterBackgroundNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(willResignActive),
+                                               name: UIApplication.willResignActiveNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(didBecomeActive),
+                                               name: UIApplication.didBecomeActiveNotification, object: nil)
     }
 
     @objc func willEnterForeground() {
-        let segment = segments[currentAnimationIndex]
-        segment.topSegmentView.willEnterForeground { [weak self] in
+        currentSegment.topSegmentView.willEnterForeground { [weak self] in
             self?.next()
         }
     }
     
     @objc func didEnterBackground() {
-        let segment = segments[currentAnimationIndex]
-        segment.topSegmentView.didEnterBackground()
+        currentSegment.topSegmentView.didEnterBackground()
+    }
+    
+    @objc func willResignActive() {
+        currentSegment.topSegmentView.willResignActive()
+    }
+    
+    @objc func didBecomeActive() {
+        currentSegment.topSegmentView.didBecomeActive()
     }
 }
 
