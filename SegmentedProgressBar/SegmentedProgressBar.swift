@@ -131,6 +131,22 @@ class SegmentedProgressBar: UIView {
             self.delegate?.segmentedProgressBarFinished()
         }
     }
+    
+    func goto(index: Int, callDelegate: Bool = true) {
+        let index = max(0, min(index, segments.count))
+        for i in 0..<segments.count {
+            let currentSegment = segments[i]
+            // 移除正在进行的动画
+            currentSegment.topSegmentView.layer.removeAllAnimations()
+            let width = i <= index ? currentSegment.bottomSegmentView.frame.width : 0
+            currentSegment.topSegmentView.frame.size.width = width
+        }
+        currentAnimationIndex = index
+        isAnimating = false
+        if callDelegate {
+            self.delegate?.segmentedProgressBarChangedIndex(index: index, animated: false)
+        }
+    }
 }
 
 fileprivate class Segment {
