@@ -124,24 +124,6 @@ class SegmentedProgressBar: UIView {
             self.delegate?.segmentedProgressBarFinished()
         }
     }
-    
-    func skip() {
-        let currentSegment = segments[currentAnimationIndex]
-        currentSegment.topSegmentView.frame.size.width = currentSegment.bottomSegmentView.frame.width
-        currentSegment.topSegmentView.layer.removeAllAnimations()
-        self.next()
-    }
-    
-    func rewind() {
-        let currentSegment = segments[currentAnimationIndex]
-        currentSegment.topSegmentView.layer.removeAllAnimations()
-        currentSegment.topSegmentView.frame.size.width = 0
-        let newIndex = max(currentAnimationIndex - 1, 0)
-        let prevSegment = segments[newIndex]
-        prevSegment.topSegmentView.frame.size.width = 0
-        self.animate(animationIndex: newIndex)
-        self.delegate?.segmentedProgressBarChangedIndex(index: newIndex, animated: true)
-    }
 }
 
 fileprivate class Segment {
