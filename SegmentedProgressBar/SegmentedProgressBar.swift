@@ -8,7 +8,7 @@
 import UIKit
 
 protocol SegmentedProgressBarDelegate: AnyObject {
-    func segmentedProgressBarChangedIndex(index: Int)
+    func segmentedProgressBarChangedIndex(index: Int, animated: Bool)
     func segmentedProgressBarFinished()
 }
 
@@ -119,7 +119,7 @@ class SegmentedProgressBar: UIView {
         let newIndex = self.currentAnimationIndex + 1
         if newIndex < self.segments.count {
             self.animate(animationIndex: newIndex)
-            self.delegate?.segmentedProgressBarChangedIndex(index: newIndex)
+            self.delegate?.segmentedProgressBarChangedIndex(index: newIndex, animated: true)
         } else {
             self.delegate?.segmentedProgressBarFinished()
         }
@@ -140,7 +140,7 @@ class SegmentedProgressBar: UIView {
         let prevSegment = segments[newIndex]
         prevSegment.topSegmentView.frame.size.width = 0
         self.animate(animationIndex: newIndex)
-        self.delegate?.segmentedProgressBarChangedIndex(index: newIndex)
+        self.delegate?.segmentedProgressBarChangedIndex(index: newIndex, animated: true)
     }
 }
 
